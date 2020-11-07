@@ -1,0 +1,1 @@
+Original by https://dev.to/darcyrayner/typescript-dependency-injection-in-200-loc-12j7
