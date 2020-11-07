@@ -1,52 +1,55 @@
 import { Type } from "./type";
 
 export class InjectionToken {
-  constructor(public injectionIdentifier: string) {}
+  constructor(public injectionIdentifier: string) { }
 }
 
 export type Factory<T> = () => T;
 
-export type Token<T> = Type<T> | InjectionToken;
+export type Token = Type<any> | InjectionToken;
 
-export interface BaseProvider<T> {
-  provide: Token<T>;
+export interface ClassProvider {
+  provide: any;
+  useClass: Type<any>;
 }
 
-export interface ClassProvider<T> extends BaseProvider<T> {
-  provide: Token<T>;
-  useClass: Type<T>;
-}
-export interface ValueProvider<T> extends BaseProvider<T> {
-  provide: Token<T>;
-  useValue: T;
-}
-export interface FactoryProvider<T> extends BaseProvider<T> {
-  provide: Token<T>;
-  useFactory: Factory<T>;
+export interface ValueProvider {
+  provide: any;
+  useValue: any;
 }
 
-export interface TypeProvider extends Type<any> {}
+export interface FactoryProvider {
+  provide: any;
+  useFactory: Factory<any>;
+}
 
-export type Provider<T> =
-  // | TypeProvider
-  | ClassProvider<T>
-  | ValueProvider<T>
-  | FactoryProvider<T>;
+export interface TypeProvider extends Type<any> {
+  provide?: any;
+}
 
-export function isClassProvider<T>(
-  provider: BaseProvider<T>
-): provider is ClassProvider<T> {
+export type Provider =
+  | TypeProvider
+  | ClassProvider
+  | ValueProvider
+  | FactoryProvider;
+
+/**
+ * Utils functions
+ * @param provider 
+ */
+
+export function isTypeProvider(provider: any) {
+  return provider.prototype !== undefined;
+}
+
+export function isClassProvider(provider: any): provider is ClassProvider{
   return (provider as any).useClass !== undefined;
 }
 
-export function isValueProvider<T>(
-  provider: BaseProvider<T>
-): provider is ValueProvider<T> {
+export function isValueProvider(provider: any): provider is ValueProvider{
   return (provider as any).useValue !== undefined;
 }
 
-export function isFactoryProvider<T>(
-  provider: BaseProvider<T>
-): provider is FactoryProvider<T> {
+export function isFactoryProvider(provider: any): provider is FactoryProvider{
   return (provider as any).useFactory !== undefined;
 }

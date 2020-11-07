@@ -1,9 +1,9 @@
-import { Container } from "./container";
+import { ReflectiveInjector } from "./reflective-injector";
 import { Injectable } from "./injectable";
 import { Inject } from "./inject";
 import { InjectionToken } from "./provider";
 
-describe("Container", () => {
+describe("ReflectiveInjector", () => {
   describe("inject", () => {
     class BasicClass {
       constructor(public x: number) {}
@@ -50,7 +50,7 @@ describe("Container", () => {
     }
 
     it("can inject using a value provider", () => {
-      const container = new Container();
+      const container = new ReflectiveInjector();
       const input = { x: 200 };
       container.addProvider({ provide: BasicClass, useValue: input });
       const output = container.inject(BasicClass);
@@ -58,7 +58,7 @@ describe("Container", () => {
     });
 
     it("can inject using a factory provider", () => {
-      const container = new Container();
+      const container = new ReflectiveInjector();
       const input = { x: 200 };
       container.addProvider({ provide: BasicClass, useFactory: () => input });
       const injectedVal = container.inject(BasicClass);
@@ -66,7 +66,7 @@ describe("Container", () => {
     });
 
     it("can inject using a class provider", () => {
-      const container = new Container();
+      const container = new ReflectiveInjector();
       const basicValue = { x: 200 };
       container.addProvider({ provide: BasicClass, useValue: basicValue });
       container.addProvider({
@@ -78,7 +78,7 @@ describe("Container", () => {
     });
 
     it("will default to a class provider for the top level class if no provider for that type exists and the type is injectable ", () => {
-      const container = new Container();
+      const container = new ReflectiveInjector();
       const basicValue = { x: 200 };
       container.addProvider({ provide: BasicClass, useValue: basicValue });
       const injectedVal = container.inject(InjectableClass);
@@ -86,7 +86,7 @@ describe("Container", () => {
     });
 
     it("will throw an error when a class with a circular dependency is detected", () => {
-      const container = new Container();
+      const container = new ReflectiveInjector();
       container.addProvider({
         provide: ACircularClass,
         useClass: ACircularClass
@@ -103,7 +103,7 @@ describe("Container", () => {
     });
 
     it("will throw an error when a class which isn't injectable is provided with a class provider", () => {
-      const injector = new Container();
+      const injector = new ReflectiveInjector();
       const provider = { provide: BasicClass, useClass: BasicClass };
       expect(() =>
         injector.addProvider(provider)
@@ -113,7 +113,7 @@ describe("Container", () => {
     });
 
     it("can inject a class provider with an override", () => {
-      const container = new Container();
+      const container = new ReflectiveInjector();
       container.addProvider({
         provide: AnotherBasicClass,
         useClass: AnotherBasicClass
@@ -129,7 +129,7 @@ describe("Container", () => {
     });
 
     it("can inject a string value provider with an override and injection token", () => {
-      const container = new Container();
+      const container = new ReflectiveInjector();
       const specialValue = "the special value";
       container.addProvider({
         provide: TokenStringOverrideClass,
@@ -145,7 +145,7 @@ describe("Container", () => {
     });
 
     it("will throw an exception if a value for an injection token doesn't exist", () => {
-      const container = new Container();
+      const container = new ReflectiveInjector();
       container.addProvider({
         provide: TokenStringOverrideClass,
         useClass: TokenStringOverrideClass
@@ -158,7 +158,7 @@ describe("Container", () => {
     });
 
     it("will fail to inject an interface", () => {
-      const container = new Container();
+      const container = new ReflectiveInjector();
       expect(() =>
         container.inject(SomeInferfaceClass)
       ).toThrowErrorMatchingInlineSnapshot(`"No provider for type Object"`);

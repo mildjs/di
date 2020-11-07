@@ -1,4 +1,4 @@
 export * from "./injectable";
-export * from "./container";
+export * from "./reflective-injector";
 export * from "./provider";
 export * from "./inject";

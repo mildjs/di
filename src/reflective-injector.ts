@@ -1,5 +1,7 @@
 import {
   Provider,
+  TypeProvider,
+  isTypeProvider,
   isClassProvider,
   ClassProvider,
   ValueProvider,
@@ -17,15 +19,31 @@ type InjectableParam = Type<any>;
 
 const REFLECT_PARAMS = "design:paramtypes";
 
-export class Container {
-  private providers = new Map<Token<any>, Provider<any>>();
+interface Injector {
+  get: (...args: any[]) => any;
+}
 
-  addProvider<T>(provider: Provider<T>) {
+export class ReflectiveInjector implements Injector{
+  private providers = new Map<any, Provider>();
+  private injector: Injector;
+
+  static init(providers: Provider[]) : ReflectiveInjector{
+    const injector = new ReflectiveInjector();
+
+    providers.forEach( provider => {
+      injector.addProvider(provider);
+    });
+
+    return injector;
+}
+
+  addProvider(provider: Provider) {
     this.assertInjectableIfClassProvider(provider);
     this.providers.set(provider.provide, provider);
   }
 
-  inject<T>(type: Token<T>): T {
+  public get(type: Token) {
+    // Inject the dependencies
     let provider = this.providers.get(type);
     if (provider === undefined && !(type instanceof InjectionToken)) {
       provider = { provide: type, useClass: type };
@@ -34,21 +52,21 @@ export class Container {
     return this.injectWithProvider(type, provider);
   }
 
-  private injectWithProvider<T>(type: Token<T>, provider?: Provider<T>): T {
+  private injectWithProvider(type: Token, provider?: Provider) {
     if (provider === undefined) {
       throw new Error(`No provider for type ${this.getTokenName(type)}`);
     }
     if (isClassProvider(provider)) {
-      return this.injectClass(provider as ClassProvider<T>);
+      return this.injectClass(provider as ClassProvider);
     } else if (isValueProvider(provider)) {
-      return this.injectValue(provider as ValueProvider<T>);
+      return this.injectValue(provider as ValueProvider);
     } else {
       // Factory provider by process of elimination
-      return this.injectFactory(provider as FactoryProvider<T>);
+      return this.injectFactory(provider as FactoryProvider);
     }
   }
 
-  private assertInjectableIfClassProvider<T>(provider: Provider<T>) {
+  private assertInjectableIfClassProvider(provider: any) {
     if (isClassProvider(provider) && !isInjectable(provider.useClass)) {
       throw new Error(
         `Cannot provide ${this.getTokenName(
@@ -60,17 +78,17 @@ export class Container {
     }
   }
 
-  private injectClass<T>(classProvider: ClassProvider<T>): T {
+  private injectClass<T>(classProvider: ClassProvider): T {
     const target = classProvider.useClass;
     const params = this.getInjectedParams(target);
     return Reflect.construct(target, params);
   }
 
-  private injectValue<T>(valueProvider: ValueProvider<T>): T {
+  private injectValue(valueProvider: ValueProvider): any {
     return valueProvider.useValue;
   }
 
-  private injectFactory<T>(valueProvider: FactoryProvider<T>): T {
+  private injectFactory(valueProvider: FactoryProvider) {
     return valueProvider.useFactory();
   }
 
@@ -86,8 +104,7 @@ export class Container {
       // for the argument instead.
       if (argType === undefined) {
         throw new Error(
-          `Injection error. Recursive dependency detected in constructor for type ${
-            target.name
+          `Injection error. Recursive dependency detected in constructor for type ${target.name
           } with parameter at index ${index}`
         );
       }
@@ -98,7 +115,7 @@ export class Container {
     });
   }
 
-  private getTokenName<T>(token: Token<T>) {
+  private getTokenName(token: Token) {
     return token instanceof InjectionToken
       ? token.injectionIdentifier
       : token.name;
