@@ -25,7 +25,6 @@ interface Injector {
 
 export class ReflectiveInjector implements Injector{
   private providers = new Map<any, Provider>();
-  private injector: Injector;
 
   static init(providers: Provider[]) : ReflectiveInjector{
     const injector = new ReflectiveInjector();
