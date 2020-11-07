@@ -8,7 +8,7 @@ import {
   FactoryProvider,
   isValueProvider,
   Token,
-  InjectionToken
+  InjectionToken,
 } from "./provider";
 import { Type } from "./type";
 import { isInjectable } from "./injectable";
@@ -23,18 +23,18 @@ interface Injector {
   get: (...args: any[]) => any;
 }
 
-export class ReflectiveInjector implements Injector{
+export class ReflectiveInjector implements Injector {
   private providers = new Map<any, Provider>();
 
-  static init(providers: Provider[]) : ReflectiveInjector{
+  static init(providers: Provider[]): ReflectiveInjector {
     const injector = new ReflectiveInjector();
 
-    providers.forEach( provider => {
+    providers.forEach((provider) => {
       injector.addProvider(provider);
     });
 
     return injector;
-}
+  }
 
   addProvider(provider: Provider) {
     this.assertInjectableIfClassProvider(provider);
@@ -94,7 +94,8 @@ export class ReflectiveInjector implements Injector{
   private getInjectedParams<T>(target: Type<T>) {
     const argTypes = Reflect.getMetadata(REFLECT_PARAMS, target) as (
       | InjectableParam
-      | undefined)[];
+      | undefined
+    )[];
     if (argTypes === undefined) {
       return [];
     }
@@ -103,13 +104,12 @@ export class ReflectiveInjector implements Injector{
       // for the argument instead.
       if (argType === undefined) {
         throw new Error(
-          `Injection error. Recursive dependency detected in constructor for type ${target.name
-          } with parameter at index ${index}`
+          `Injection error. Recursive dependency detected in constructor for type ${target.name} with parameter at index ${index}`
         );
       }
       const overrideToken = getInjectionToken(target, index);
       const actualToken = overrideToken === undefined ? argType : overrideToken;
-      let provider = this.providers.get(actualToken);
+      const provider = this.providers.get(actualToken);
       return this.injectWithProvider(actualToken, provider);
     });
   }

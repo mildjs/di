@@ -1,7 +1,7 @@
-import { ReflectiveInjector } from "./reflective-injector";
-import { Injectable } from "./injectable";
-import { Inject } from "./inject";
-import { InjectionToken } from "./provider";
+import { ReflectiveInjector } from "../src/reflective-injector";
+import { Injectable } from "../src/injectable";
+import { Inject } from "../src/inject";
+import { InjectionToken } from "../src/provider";
 
 describe("ReflectiveInjector", () => {
   describe("inject", () => {
@@ -71,7 +71,7 @@ describe("ReflectiveInjector", () => {
       injector.addProvider({ provide: BasicClass, useValue: basicValue });
       injector.addProvider({
         provide: InjectableClass,
-        useClass: InjectableClass
+        useClass: InjectableClass,
       });
       const injectedVal = injector.get(InjectableClass);
       expect(injectedVal.basicClass).toBe(basicValue);
@@ -89,11 +89,11 @@ describe("ReflectiveInjector", () => {
       const injector = new ReflectiveInjector();
       injector.addProvider({
         provide: ACircularClass,
-        useClass: ACircularClass
+        useClass: ACircularClass,
       });
       injector.addProvider({
         provide: BCircularClass,
-        useClass: BCircularClass
+        useClass: BCircularClass,
       });
       expect(() =>
         injector.get(ACircularClass)
@@ -116,12 +116,12 @@ describe("ReflectiveInjector", () => {
       const injector = new ReflectiveInjector();
       injector.addProvider({
         provide: AnotherBasicClass,
-        useClass: AnotherBasicClass
+        useClass: AnotherBasicClass,
       });
       injector.addProvider({ provide: BasicClass, useValue: { x: 200 } });
       injector.addProvider({
         provide: TokenOverrideClass,
-        useClass: TokenOverrideClass
+        useClass: TokenOverrideClass,
       });
 
       const output = injector.get(TokenOverrideClass);
@@ -133,11 +133,11 @@ describe("ReflectiveInjector", () => {
       const specialValue = "the special value";
       injector.addProvider({
         provide: TokenStringOverrideClass,
-        useClass: TokenStringOverrideClass
+        useClass: TokenStringOverrideClass,
       });
       injector.addProvider({
         provide: SPECIAL_STRING_TOKEN,
-        useValue: specialValue
+        useValue: specialValue,
       });
 
       const output = injector.get(TokenStringOverrideClass);
@@ -148,7 +148,7 @@ describe("ReflectiveInjector", () => {
       const injector = new ReflectiveInjector();
       injector.addProvider({
         provide: TokenStringOverrideClass,
-        useClass: TokenStringOverrideClass
+        useClass: TokenStringOverrideClass,
       });
       expect(() =>
         injector.get(TokenStringOverrideClass)
@@ -162,6 +162,18 @@ describe("ReflectiveInjector", () => {
       expect(() =>
         injector.get(SomeInferfaceClass)
       ).toThrowErrorMatchingInlineSnapshot(`"No provider for type Object"`);
+    });
+
+    // Static method
+    //
+    it("static init method: can inject using a value provider", () => {
+      // const injector = new ReflectiveInjector();
+      const input = { x: 200 };
+      const injector = ReflectiveInjector.init([
+        { provide: BasicClass, useValue: input },
+      ]);
+      const output = injector.get(BasicClass);
+      expect(input).toBe(output);
     });
   });
 });
