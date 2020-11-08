@@ -1,5 +1,6 @@
 import "reflect-metadata";
-import { Token } from "./provider";
+import { Token } from "../provider";
+import { Dictionary } from '../types';
 
 const INJECT_METADATA_KEY = Symbol("INJECT_KEY");
 
@@ -9,7 +10,7 @@ const INJECT_METADATA_KEY = Symbol("INJECT_KEY");
  * @param token
  */
 
-export function Inject(token: Token) : ParameterDecorator {
+export function Inject(token: Token): ParameterDecorator {
   return (target: any, _: string | symbol, index: number) => {
     return makeInjectableParamsDecorator(token, target, index);
   };
@@ -27,10 +28,10 @@ export function makeInjectableParamsDecorator(
   target: any,
   index: number
 ) {
-  if(token === undefined)
+  if (token === undefined)
     throw new Error("Token is undefined, Token must be provided");
 
-  const injectionTokens : Dictionary<Token> = Reflect.getOwnMetadata(INJECT_METADATA_KEY, target) || {};
+  const injectionTokens: Dictionary<Token> = Reflect.getOwnMetadata(INJECT_METADATA_KEY, target) || {};
   injectionTokens[index] = token;
 
   Reflect.defineMetadata(
@@ -42,14 +43,9 @@ export function makeInjectableParamsDecorator(
 }
 
 
-type Dictionary<T> = {
-  [key: string]: T;
-};
-
-
 export function getInjectionToken(target: any, index: number) {
   const injectionTokens: Dictionary<Token> = Reflect.getOwnMetadata(INJECT_METADATA_KEY, target);
-  if(injectionTokens === undefined) 
+  if (injectionTokens === undefined)
     return undefined;
   return injectionTokens[index] as Token | undefined;
 }

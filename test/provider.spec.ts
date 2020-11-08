@@ -1,5 +1,5 @@
 import {
-  isTypeProvider,
+  isConstructorProvider,
   isClassProvider,
   isValueProvider,
   isFactoryProvider,
@@ -7,11 +7,11 @@ import {
 
 describe("isTypeProvider", () => {
   it("can identify a type provider", () => {
-    const output = isTypeProvider(String);
+    const output = isConstructorProvider(String);
     expect(output).toBeTruthy();
   });
   it("can identify a non-type provider", () => {
-    const output = isTypeProvider({ provide: String, useValue: "Hello" });
+    const output = isConstructorProvider({ provide: String, useValue: "Hello" });
     expect(output).toBeFalsy();
   });
 });

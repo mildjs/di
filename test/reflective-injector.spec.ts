@@ -1,7 +1,7 @@
 import { ReflectiveInjector } from "../src/reflective-injector";
-import { Injectable } from "../src/injectable";
-import { Inject } from "../src/inject";
-import { InjectionToken } from "../src/provider";
+import { Injectable } from "../src/decorators/injectable";
+import { Inject } from "../src/decorators/inject";
+import { InjectionToken } from "../src/injection-token";
 
 describe("ReflectiveInjector", () => {
   describe("inject", () => {

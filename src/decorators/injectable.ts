@@ -1,5 +1,4 @@
-import "reflect-metadata";
-import { Type } from "./type";
+import { Constructor } from "../types";
 
 const INJECTABLE_METADATA_KEY = Symbol("INJECTABLE_KEY");
 
@@ -19,6 +18,6 @@ export function makeInjectableDecorator(target: any) {
   return target;
 }
 
-export function isInjectable<T>(target: Type<T>) {
+export function isInjectable<T>(target: Constructor<T>) {
   return Reflect.getMetadata(INJECTABLE_METADATA_KEY, target) === true;
 }

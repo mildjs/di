@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { isInjectable, Injectable } from "../src/injectable";
+import { isInjectable, Injectable } from "../src/decorators/injectable";
 
 describe("Injectable", () => {
   @Injectable()
