@@ -1,0 +1,1 @@
+- [ ] Can't create InjectionToken same file with `ReflectiveInjector.init`, the token will be undefined

@@ -3,8 +3,13 @@
  */
 
 export type Constructor<T> = {
-  new(...args: any[]): T;
+  // tslint:disable-next-line:callable-types
+  new (...args: any[]): T;
 };
+
+export function isConstructor(value: any): value is Constructor<any> {
+  return typeof value === "function";
+}
 
 /**
  * Dictionary type

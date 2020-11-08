@@ -1,5 +1,5 @@
-import { Constructor } from "./types";
-import { InjectionToken } from './injection-token';
+import { Constructor, isConstructor } from "./types";
+import { InjectionToken } from "./injection-token";
 
 export type Factory<T> = () => T;
 export type Token = Constructor<any> | InjectionToken<any>;
@@ -34,7 +34,8 @@ export type Provider =
  */
 
 export function isConstructorProvider(provider: any) {
-  return provider.prototype !== undefined;
+  // return provider.prototype !== undefined;
+  return isConstructor(provider);
 }
 
 export function isClassProvider(provider: any): provider is ClassProvider {

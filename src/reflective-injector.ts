@@ -9,8 +9,8 @@ import {
   isValueProvider,
   Token,
 } from "./provider";
-import { InjectionToken } from './injection-token';
-import { Constructor } from "./types";
+import { InjectionToken } from "./injection-token";
+import { Constructor, isConstructor } from "./types";
 import { isInjectable } from "./decorators/injectable";
 
 import { getInjectionToken } from "./decorators/inject";
@@ -37,8 +37,12 @@ export class ReflectiveInjector implements Injector {
   }
 
   addProvider(provider: Provider) {
-    this.assertInjectableIfClassProvider(provider);
-    this.providers.set(provider.provide, provider);
+    let parsedProvider: Provider = provider;
+    if (isConstructor(provider)) {
+      parsedProvider = { provide: provider, useClass: provider };
+    }
+    this.assertInjectableIfClassProvider(parsedProvider);
+    this.providers.set(parsedProvider.provide, parsedProvider);
   }
 
   public get(type: Token) {
@@ -80,10 +84,6 @@ export class ReflectiveInjector implements Injector {
   private injectClass<T>(classProvider: ClassProvider): T {
     const target = classProvider.useClass;
     const params = this.getInjectedParams(target);
-
-    let instance = Object.create(target.prototype);
-    instance.constructor.apply(instance, params);
-    // return <T>instance;
     return Reflect.construct(target, params);
   }
 
@@ -105,7 +105,6 @@ export class ReflectiveInjector implements Injector {
     }
 
     return argConstructors.map((argConstructor, index) => {
-
       // The reflect-metadata API fails on circular dependencies, and will return undefined
       // for the argument instead.
       if (argConstructor === undefined) {
@@ -115,7 +114,8 @@ export class ReflectiveInjector implements Injector {
       }
 
       const overrideToken = getInjectionToken(target, index);
-      const actualToken = overrideToken === undefined ? argConstructor : overrideToken;
+      const actualToken =
+        overrideToken === undefined ? argConstructor : overrideToken;
       const provider = this.providers.get(actualToken);
       return this.injectWithProvider(actualToken, provider);
     });
