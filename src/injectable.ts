@@ -1,5 +1,5 @@
-import { Type } from "./type";
 import "reflect-metadata";
+import { Type } from "./type";
 
 const INJECTABLE_METADATA_KEY = Symbol("INJECTABLE_KEY");
 

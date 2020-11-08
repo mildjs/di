@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import {
   Provider,
   TypeProvider,
@@ -12,7 +13,7 @@ import {
 } from "./provider";
 import { Type } from "./type";
 import { isInjectable } from "./injectable";
-import "reflect-metadata";
+
 import { getInjectionToken } from "./inject";
 
 type InjectableParam = Type<any>;
@@ -80,6 +81,10 @@ export class ReflectiveInjector implements Injector {
   private injectClass<T>(classProvider: ClassProvider): T {
     const target = classProvider.useClass;
     const params = this.getInjectedParams(target);
+
+    let instance = Object.create(target.prototype);
+    instance.constructor.apply(instance, params);
+    // return <T>instance;
     return Reflect.construct(target, params);
   }
 
@@ -99,7 +104,9 @@ export class ReflectiveInjector implements Injector {
     if (argTypes === undefined) {
       return [];
     }
+  
     return argTypes.map((argType, index) => {
+
       // The reflect-metadata API fails on circular dependencies, and will return undefined
       // for the argument instead.
       if (argType === undefined) {
@@ -107,6 +114,7 @@ export class ReflectiveInjector implements Injector {
           `Injection error. Recursive dependency detected in constructor for type ${target.name} with parameter at index ${index}`
         );
       }
+      
       const overrideToken = getInjectionToken(target, index);
       const actualToken = overrideToken === undefined ? argType : overrideToken;
       const provider = this.providers.get(actualToken);

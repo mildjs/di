@@ -1,16 +1,21 @@
 import { Type } from "./type";
 
-export class InjectionToken {
+/**
+ * example:
+ * const TOKEN = new InjectionToken(TOKEN_KEY)
+ */
+
+export class InjectionToken<T> {
   constructor(public injectionIdentifier: string) {}
 
-  toString() {
-    return `InjectionToken '${this.injectionIdentifier}'`;
-  }
+  // toString() {
+  //   return `InjectionToken '${this.injectionIdentifier}'`;
+  // }
 }
 
 export type Factory<T> = () => T;
 
-export type Token = Type<any> | InjectionToken;
+export type Token = Type<any> | InjectionToken<any>;
 
 export interface ClassProvider {
   provide: any;
@@ -36,7 +41,6 @@ export type Provider =
   | ClassProvider
   | ValueProvider
   | FactoryProvider;
-
 /**
  * Utils functions
  * @param provider
