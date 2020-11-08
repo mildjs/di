@@ -6,7 +6,7 @@ const INJECT_METADATA_KEY = Symbol("INJECT_KEY");
 /**
  * @Inject Decorator
  *
- * @param token 
+ * @param token
  */
 
 export function Inject(token: Token) {
@@ -21,14 +21,13 @@ export function Inject(token: Token) {
  * @param target Class decorator target
  * @param index Index of parameters
  */
- 
-export function makeInjectableParamsDecorator(token: Token, target: any, index: number){
-  Reflect.defineMetadata(
-    INJECT_METADATA_KEY,
-    token,
-    target,
-    `index-${index}`
-  );
+
+export function makeInjectableParamsDecorator(
+  token: Token,
+  target: any,
+  index: number
+) {
+  Reflect.defineMetadata(INJECT_METADATA_KEY, token, target, `index-${index}`);
   return target;
 }
 

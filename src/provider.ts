@@ -3,9 +3,9 @@ import { Type } from "./type";
 export class InjectionToken {
   constructor(public injectionIdentifier: string) {}
 
-  toString(){
+  toString() {
     return `InjectionToken '${this.injectionIdentifier}'`;
-  }  
+  }
 }
 
 export type Factory<T> = () => T;
