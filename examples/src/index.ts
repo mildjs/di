@@ -15,8 +15,8 @@ class InjectableClass {
 const injector = ReflectiveInjector.init([
     InjectableClass,
     { provide: SomeService, useClass: SomeService },
-    { provide: API_TOKEN, useValue: 9999 }
+    { provide: API_TOKEN, useValue: 2123 }
 ]);
 
-const instance = injector.get(InjectableClass);
-console.log(instance.someService.aaa);
+const instance = injector.get(API_TOKEN);
+console.log(instance);
