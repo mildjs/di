@@ -5,11 +5,10 @@ import { InjectableClass } from './injectable-class';
 import { API_TOKEN } from './tokens';
 
 const injector = ReflectiveInjector.init([
-    // InjectableClass,
-    { provide: InjectableClass, useClass: InjectableClass },
-    // { provide: SomeService, useClass: SomeService },
+    InjectableClass,
+    { provide: SomeService, useClass: SomeService },
     { provide: API_TOKEN, useValue: "API_KEY" }
 ]);
 
 const instance = injector.get(InjectableClass) as InjectableClass;
-console.log(instance.info());
+console.log(instance.someService.api);
