@@ -1,2 +1,2 @@
 # TODO
-- [ ] Support async factory
+- [X] Support async factory
