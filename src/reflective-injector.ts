@@ -8,6 +8,7 @@ import {
   FactoryProvider,
   isValueProvider,
   Token,
+  isFactoryProvider,
 } from "./provider";
 import { InjectionToken } from "./injection-token";
 import { Constructor, isConstructor } from "./types";
@@ -113,12 +114,47 @@ export class ReflectiveInjector implements Injector {
         );
       }
 
-      const overrideToken = getInjectionToken(target, index);
+      const injectionTokenHandler = getInjectionToken(target, index);
+
+      const overrideToken = injectionTokenHandler?.token || undefined;
       const actualToken =
         overrideToken === undefined ? argConstructor : overrideToken;
-      const provider = this.providers.get(actualToken);
+
+      if (actualToken === undefined) {
+        throw new Error('Can\'t resolving the actual token (undefined)');
+      }
+
+      let provider: any;
+      /**
+       * Use value from the decorator, instead of getting from the provider
+       */
+      if (injectionTokenHandler?.value !== undefined) {
+        provider = this.getInjectionTokenProvider(injectionTokenHandler.value);
+      } else {
+        provider = this.providers.get(actualToken);
+      }
+
       return this.injectWithProvider(actualToken, provider);
     });
+  }
+
+  /**
+   * Use value from the decorator, instead of getting from the provider
+   */
+
+  private getInjectionTokenProvider(value: any): Provider {
+
+    if (typeof value === "function")
+      return {
+        provide: new InjectionToken('generated_token_from_InjectionTokenHandler_factory'),
+        useFactory: value
+      } as FactoryProvider;
+    else
+      return {
+        provide: new InjectionToken('generated_token_from_InjectionTokenHandler_value'),
+        useValue: value
+      } as ValueProvider;
+
   }
 
   private getTokenName(token: Token) {

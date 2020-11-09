@@ -4,9 +4,7 @@
  */
 
 export class InjectionToken<T> {
+
   constructor(public injectionIdentifier: string) {}
 
-  // toString() {
-  //   return `InjectionToken '${this.injectionIdentifier}'`;
-  // }
 }
