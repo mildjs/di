@@ -3,7 +3,7 @@ import {
   isClassProvider,
   isValueProvider,
   isFactoryProvider
-} from "../src/provider";
+} from "../src/providers/provider.interface";
 
 describe("isTypeProvider", () => {
   it("can identify a type provider", () => {

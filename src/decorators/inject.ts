@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Token } from "../provider";
+import { Token, Provider, FactoryProvider, ValueProvider } from "../providers/provider.interface";
 import { Dictionary } from "../types";
 
 interface InjectionTokensHandler {
@@ -57,3 +57,21 @@ export function getInjectionToken(target: any, index: number) {
   return injectionTokens[index] as InjectionTokensHandler | undefined;
 }
 
+
+/**
+* Use value from the decorator, instead of getting from the provider
+*/
+
+export function getInjectionTokenProvider(value: any): Provider {
+
+  if (typeof value === "function")
+    return {
+      provide: 'generated_token_from_InjectionTokenHandler_factory',
+      useFactory: value
+    } as FactoryProvider;
+  else
+    return {
+      provide: 'generated_token_from_InjectionTokenHandler_value',
+      useValue: value
+    } as ValueProvider;
+}
