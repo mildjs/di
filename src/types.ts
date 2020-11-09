@@ -22,3 +22,12 @@ export function getClassName(value: Constructor<any>) {
 export type Dictionary<T> = {
   [key: string]: T;
 };
+
+/**
+ * Promise type
+ * https://gist.github.com/mildronize/5f73230c8e2d692770d2a9326faefe2b
+ */
+
+export function isPromise(p: any) {
+  return p && Object.prototype.toString.call(p) === "[object Promise]";
+}

@@ -3,6 +3,7 @@ import {
   isClassProvider,
   isValueProvider,
   isFactoryProvider,
+  isFactoryAsyncProvider
 } from "../src/provider";
 
 describe("isTypeProvider", () => {
@@ -48,6 +49,20 @@ describe("isFactoryProvider", () => {
   });
   it("can identify a non-factory provider", () => {
     const output = isFactoryProvider({ provide: String, useClass: String });
+    expect(output).toBeFalsy();
+  });
+});
+
+describe("isFactoryAsyncProvider", () => {
+  it("can identify a factory provider", () => {
+    const output = isFactoryAsyncProvider({
+      provide: String,
+      useFactoryAsync: new Promise(resolve => setTimeout(resolve, 100)),
+    });
+    expect(output).toBeTruthy();
+  });
+  it("can identify a non-factory provider", () => {
+    const output = isFactoryAsyncProvider({ provide: String, useClass: String });
     expect(output).toBeFalsy();
   });
 });

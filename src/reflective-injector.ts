@@ -5,8 +5,10 @@ import {
   isClassProvider,
   ClassProvider,
   ValueProvider,
+  FactoryAsyncProvider,
   FactoryProvider,
   isValueProvider,
+  isFactoryAsyncProvider,
   Token,
   isFactoryProvider,
 } from "./provider";
@@ -48,7 +50,7 @@ export class ReflectiveInjector implements Injector {
   public get(type: Token) {
     // Inject the dependencies
     let provider = this.providers.get(type);
-    if (provider === undefined && isConstructor(type) ) {
+    if (provider === undefined && isConstructor(type)) {
       provider = { provide: type, useClass: type };
       this.assertInjectableIfClassProvider(provider);
     }
@@ -63,6 +65,8 @@ export class ReflectiveInjector implements Injector {
       return this.injectClass(provider as ClassProvider);
     } else if (isValueProvider(provider)) {
       return this.injectValue(provider as ValueProvider);
+    } else if (isFactoryAsyncProvider(provider)) {
+      return this.injectFactoryAsync(provider as FactoryAsyncProvider);
     } else {
       // Factory provider by process of elimination
       return this.injectFactory(provider as FactoryProvider);
@@ -93,6 +97,11 @@ export class ReflectiveInjector implements Injector {
 
   private injectFactory(valueProvider: FactoryProvider) {
     return valueProvider.useFactory();
+  }
+
+  private async injectFactoryAsync(valueProvider: FactoryAsyncProvider) {
+    const factory = await valueProvider.useFactoryAsync;
+    return factory();
   }
 
   private getInjectedParams<T>(target: Constructor<T>) {

@@ -1,6 +1,6 @@
 {
   "name": "@mildjs/di",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "author": "Thada Wangthammang",
   "description": "DI",
   "directories": {
@@ -39,9 +39,7 @@
     "doc:build": "typedoc",
     "doc:watch": "chokidar \"src/**/*.ts\" -c  \"typedoc\"",
     "doc:serve": "live-server _docs",
-    "doc:dev": "run-p doc:build && run-p doc:watch doc:serve",
-    "link:injection-js": "npm link injection-js",
-    "unlink:injection-js": "npm install injection-js"
+    "doc:dev": "run-p doc:build && run-p doc:watch doc:serve"
   },
   "dependencies": {},
   "peerDependencies": {
