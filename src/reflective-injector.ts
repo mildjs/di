@@ -1,7 +1,5 @@
-import { Provider, Token } from "./providers/provider.interface";
-import { ProviderFactory } from './providers/provider-factory';
-import { isConstructor } from "./types";
-import { ProviderInjection } from './providers/provider-injection';
+import { Provider, Token, assertInjectableIfClassProvider, ProviderFactory } from "./providers";
+import { isConstructor, isPromise } from "./types";
 
 export interface Injector {
   get: (...args: any[]) => any;
@@ -25,20 +23,20 @@ export class ReflectiveInjector implements Injector {
     if (isConstructor(provider)) {
       parsedProvider = { provide: provider, useClass: provider };
     }
-    ProviderFactory.assertInjectableIfClassProvider(parsedProvider);
+    assertInjectableIfClassProvider(parsedProvider);
     this.providers.set(parsedProvider.provide, parsedProvider);
   }
 
-  public get(type: Token) {
-    // Inject the dependencies
+
+  public async get(type: Token) {
     let provider = this.providers.get(type);
     if (provider === undefined && isConstructor(type)) {
       provider = { provide: type, useClass: type };
-      ProviderFactory.assertInjectableIfClassProvider(provider);
+      assertInjectableIfClassProvider(provider);
     }
 
-    const injection = new ProviderInjection(this.providers);
-    return injection.injectWithProvider(type, provider);
+    const injection = new ProviderFactory(this.providers);
+    return await injection.injectAsync(type, provider);
   }
 
 }

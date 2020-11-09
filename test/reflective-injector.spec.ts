@@ -48,23 +48,23 @@ describe("ReflectiveInjector", () => {
       constructor(public someInterface: SomeInterface) {}
     }
 
-    it("can inject using a value provider", () => {
+    it("can inject using a value provider", async () => {
       const injector = new ReflectiveInjector();
       const input = { x: 200 };
       injector.addProvider({ provide: BasicClass, useValue: input });
-      const output = injector.get(BasicClass);
+      const output = await injector.get(BasicClass);
       expect(input).toBe(output);
     });
 
-    it("can inject using a factory provider", () => {
+    it("can inject using a factory provider", async () => {
       const injector = new ReflectiveInjector();
       const input = { x: 200 };
       injector.addProvider({ provide: BasicClass, useFactory: () => input });
-      const injectedVal = injector.get(BasicClass);
+      const injectedVal = await injector.get(BasicClass);
       expect(injectedVal).toBe(input);
     });
 
-    it("can inject using a class provider", () => {
+    it("can inject using a class provider", async () => {
       const injector = new ReflectiveInjector();
       const basicValue = { x: 200 };
       injector.addProvider({ provide: BasicClass, useValue: basicValue });
@@ -72,19 +72,19 @@ describe("ReflectiveInjector", () => {
         provide: InjectableClass,
         useClass: InjectableClass,
       });
-      const injectedVal = injector.get(InjectableClass);
+      const injectedVal = await injector.get(InjectableClass);
       expect(injectedVal.basicClass).toBe(basicValue);
     });
 
-    it("will default to a class provider for the top level class if no provider for that type exists and the type is injectable ", () => {
+    it("will default to a class provider for the top level class if no provider for that type exists and the type is injectable ", async() => {
       const injector = new ReflectiveInjector();
       const basicValue = { x: 200 };
       injector.addProvider({ provide: BasicClass, useValue: basicValue });
-      const injectedVal = injector.get(InjectableClass);
+      const injectedVal = await injector.get(InjectableClass);
       expect(injectedVal.basicClass).toBe(basicValue);
     });
 
-    it("will throw an error when a class with a circular dependency is detected", () => {
+    it("will throw an error when a class with a circular dependency is detected",  () => {
       const injector = new ReflectiveInjector();
       injector.addProvider({
         provide: ACircularClass,
@@ -94,9 +94,9 @@ describe("ReflectiveInjector", () => {
         provide: BCircularClass,
         useClass: BCircularClass,
       });
-      expect(() =>
-        injector.get(ACircularClass)
-      ).toThrowErrorMatchingInlineSnapshot(
+      expect(async () =>
+        await injector.get(ACircularClass)
+      ).rejects.toThrowErrorMatchingInlineSnapshot(
         `"Injection error. Recursive dependency detected in constructor for type ACircularClass with parameter at index 0"`
       );
     });
@@ -111,7 +111,7 @@ describe("ReflectiveInjector", () => {
       );
     });
 
-    it("can inject a class provider with an override", () => {
+    it("can inject a class provider with an override", async () => {
       const injector = new ReflectiveInjector();
       injector.addProvider({
         provide: AnotherBasicClass,
@@ -123,11 +123,11 @@ describe("ReflectiveInjector", () => {
         useClass: TokenOverrideClass,
       });
 
-      const output = injector.get(TokenOverrideClass);
+      const output = await injector.get(TokenOverrideClass);
       expect(output.basicClass).toEqual(new AnotherBasicClass());
     });
 
-    it("can inject a string value provider with an override and injection token", () => {
+    it("can inject a string value provider with an override and injection token", async () => {
       const injector = new ReflectiveInjector();
       const specialValue = "the special value";
       injector.addProvider({
@@ -139,7 +139,7 @@ describe("ReflectiveInjector", () => {
         useValue: specialValue,
       });
 
-      const output = injector.get(TokenStringOverrideClass);
+      const output = await injector.get(TokenStringOverrideClass);
       expect(output.someValue).toEqual(specialValue);
     });
 
@@ -149,29 +149,29 @@ describe("ReflectiveInjector", () => {
         provide: TokenStringOverrideClass,
         useClass: TokenStringOverrideClass,
       });
-      expect(() =>
-        injector.get(TokenStringOverrideClass)
-      ).toThrowErrorMatchingInlineSnapshot(
+      expect(async () =>
+        await injector.get(TokenStringOverrideClass)
+      ).rejects.toThrowErrorMatchingInlineSnapshot(
         `"No provider for type some-identifer"`
       );
     });
 
     it("will fail to inject an interface", () => {
       const injector = new ReflectiveInjector();
-      expect(() =>
+      expect(async () =>
         injector.get(SomeInferfaceClass)
-      ).toThrowErrorMatchingInlineSnapshot(`"No provider for type Object"`);
+      ).rejects.toThrowErrorMatchingInlineSnapshot(`"No provider for type Object"`);
     });
 
     // Static method
     //
-    it("static init method: can inject using a value provider", () => {
+    it("static init method: can inject using a value provider", async () => {
       // const injector = new ReflectiveInjector();
       const input = { x: 200 };
       const injector = ReflectiveInjector.init([
         { provide: BasicClass, useValue: input },
       ]);
-      const output = injector.get(BasicClass);
+      const output = await injector.get(BasicClass);
       expect(input).toBe(output);
     });
   });

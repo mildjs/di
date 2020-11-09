@@ -51,8 +51,7 @@ export type Provider =
  * @param provider
  */
 
-export function isConstructorProvider(provider: any) {
-  // return provider.prototype !== undefined;
+export function isConstructorProvider(provider: any): provider is ConstructorProvider {
   return isConstructor(provider);
 }
 
