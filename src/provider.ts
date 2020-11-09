@@ -22,11 +22,6 @@ export interface FactoryProvider {
   useFactory: Factory<any>;
 }
 
-export interface FactoryAsyncProvider {
-  provide: any;
-  useFactoryAsync: Promise<Factory<any>>;
-}
-
 export interface ConstructorProvider extends Constructor<any> {
   provide?: any;
 }
@@ -35,8 +30,7 @@ export type Provider =
   | ConstructorProvider
   | ClassProvider
   | ValueProvider
-  | FactoryProvider
-  | FactoryAsyncProvider ;
+  | FactoryProvider;
 /**
  * Utils functions
  * @param provider
@@ -57,8 +51,4 @@ export function isValueProvider(provider: any): provider is ValueProvider {
 
 export function isFactoryProvider(provider: any): provider is FactoryProvider {
   return (provider as any).useFactory !== undefined;
-}
-
-export function isFactoryAsyncProvider(provider: any): provider is FactoryAsyncProvider {
-  return (provider as any).useFactoryAsync !== undefined;
 }
