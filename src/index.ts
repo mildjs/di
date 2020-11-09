@@ -4,3 +4,5 @@ export * from "./reflective-injector";
 export * from "./injection-token";
 export * from "./provider";
 export * from "./types";
+
+export * from './global-store';
