@@ -1,7 +1,6 @@
 import { ReflectiveInjector } from "../src/reflective-injector";
 import { Injectable } from "../src/decorators/injectable";
 import { Inject } from "../src/decorators/inject";
-import { InjectionToken } from "../src/injection-token";
 
 describe("ReflectiveInjector", () => {
   describe("inject", () => {
@@ -34,7 +33,7 @@ describe("ReflectiveInjector", () => {
       constructor(@Inject(AnotherBasicClass) public basicClass: BasicClass) {}
     }
 
-    const SPECIAL_STRING_TOKEN = new InjectionToken("some-identifer");
+    const SPECIAL_STRING_TOKEN = "some-identifer";
     @Injectable()
     class TokenStringOverrideClass {
       constructor(@Inject(SPECIAL_STRING_TOKEN) public someValue: string) {}

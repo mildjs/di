@@ -1,5 +1,5 @@
 import { SomeService } from './some-service';
-import { Injectable, InjectionToken, ReflectiveInjector, Inject } from '../../../src';
+import { Injectable, ReflectiveInjector, Inject } from '../../../src';
 
 @Injectable()
 export class InjectableClass {

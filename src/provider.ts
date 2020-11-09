@@ -1,8 +1,11 @@
 import { Constructor, isConstructor } from "./types";
-import { InjectionToken } from "./injection-token";
 
 export type Factory<T> = () => T;
-export type Token = Constructor<any> | InjectionToken<any>;
+
+/**
+ * Support Constructor, string and Symbol
+ */
+export type Token = Constructor<any> | string;
 
 export interface ClassProvider {
   provide: any;

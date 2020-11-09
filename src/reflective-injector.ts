@@ -10,8 +10,7 @@ import {
   Token,
   isFactoryProvider,
 } from "./provider";
-import { InjectionToken } from "./injection-token";
-import { Constructor, isConstructor } from "./types";
+import { Constructor, getClassName, isConstructor } from "./types";
 import { isInjectable } from "./decorators/injectable";
 
 import { getInjectionToken } from "./decorators/inject";
@@ -49,7 +48,7 @@ export class ReflectiveInjector implements Injector {
   public get(type: Token) {
     // Inject the dependencies
     let provider = this.providers.get(type);
-    if (provider === undefined && !(type instanceof InjectionToken)) {
+    if (provider === undefined && isConstructor(type) ) {
       provider = { provide: type, useClass: type };
       this.assertInjectableIfClassProvider(provider);
     }
@@ -146,20 +145,20 @@ export class ReflectiveInjector implements Injector {
 
     if (typeof value === "function")
       return {
-        provide: new InjectionToken('generated_token_from_InjectionTokenHandler_factory'),
+        provide: 'generated_token_from_InjectionTokenHandler_factory',
         useFactory: value
       } as FactoryProvider;
     else
       return {
-        provide: new InjectionToken('generated_token_from_InjectionTokenHandler_value'),
+        provide: 'generated_token_from_InjectionTokenHandler_value',
         useValue: value
       } as ValueProvider;
 
   }
 
   private getTokenName(token: Token) {
-    return token instanceof InjectionToken
-      ? token.injectionIdentifier
-      : token.name;
+    return isConstructor(token)
+      ? getClassName(token)
+      : token;
   }
 }
