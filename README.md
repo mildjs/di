@@ -1,4 +1,4 @@
-# Dependency Injection Library
+# A Lightweight Dependency Injection Library
 
 [![Build Status](https://travis-ci.org/mildjs/di.svg?branch=main)](https://travis-ci.org/mildjs/di) 
 [![codecov](https://codecov.io/gh/mildjs/di/branch/main/graph/badge.svg?token=6wlUe1OgBT)](https://codecov.io/gh/mildjs/di)
@@ -7,7 +7,12 @@
 ## Features
 
 - Support `value`, `Class`, `Factory` and `AsyncFactory`
-- GlobalStore
+
+## Installation
+
+```
+$ npm install @mildjs/di
+```
 
 ## Usage 
 
