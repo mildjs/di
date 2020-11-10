@@ -1,8 +1,8 @@
 {
   "name": "@mildjs/di",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "author": "Thada Wangthammang",
-  "description": "DI",
+  "description": "A Lightweight Dependency Injection container for Javascript/Typescript. ",
   "directories": {
     "example": "example",
     "test": "test"
@@ -34,7 +34,6 @@
     "check": "run-s format lint",
     "prepublishOnly": "run-s test build",
     "publish:patch": "npm version patch --force && npm publish",
-    "publish": "npm publish --tag next",
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag $PACKAGE_VERSION && git push --tags",
     "example": "chokidar \"**/*.ts\" -c  \" ts-node example/tester/index.ts\"",
     "doc:build": "typedoc",

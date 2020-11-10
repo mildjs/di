@@ -1,8 +1,10 @@
-# A Lightweight Dependency Injection Library
+# @MildJS/di
 
 [![Build Status](https://travis-ci.org/mildjs/di.svg?branch=main)](https://travis-ci.org/mildjs/di) 
 [![codecov](https://codecov.io/gh/mildjs/di/branch/main/graph/badge.svg?token=6wlUe1OgBT)](https://codecov.io/gh/mildjs/di)
 [![npm version](https://badge.fury.io/js/%40mildjs%2Fdi.svg)](https://badge.fury.io/js/%40mildjs%2Fdi)
+
+A Lightweight Dependency Injection container for Javascript/Typescript. 
 
 ## Features
 
@@ -11,7 +13,7 @@
 ## Installation
 
 ```
-$ npm install @mildjs/di
+$ npm install @mildjs/di reflect-metadata 
 ```
 
 ## Usage 
